@@ -1,6 +1,7 @@
 package rbmv
 
 import (
+	"log"
 	"math"
 )
 
@@ -51,15 +52,19 @@ func initMem(saveNodes, delNodes []*Node) ([]float64, float64) {
 	saveMemList := make([]float64, len(saveNodes))
 	for i := range saveNodes {
 		memSum += saveNodes[i].mem
-		saveMemList = append(saveMemList, saveNodes[i].mem)
+		saveMemList[i] = saveNodes[i].mem
 	}
 	for i := range delNodes {
 		memSum += delNodes[i].mem
 	}
-	memAvg := memSum / float64(len(saveNodes)+len(delNodes))
+	memAvg := memSum / float64(len(saveNodes))
 	return saveMemList, memAvg
 }
 
 func hasBetterMove(nextV, currV float64) bool {
-	return nextV < currV
+	exist := nextV < currV
+	if exist {
+		log.Printf("move shard since lower variance %.2f", nextV)
+	}
+	return exist
 }
